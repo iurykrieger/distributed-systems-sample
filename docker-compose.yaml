@@ -26,7 +26,7 @@ services:
       - ./docker/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
       - ./data/prometheus:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--config.file=/etc/prometheus/prometheus.yaml'
       - '--storage.tsdb.path=/prometheus'
     ports:
       - 9090:9090
@@ -38,6 +38,10 @@ services:
     environment:
       -  GF_SECURITY_ADMIN_PASSWORD=admin
     restart: unless-stopped
+    volumes:
+      - ./docker/grafana/grafana.yaml:/etc/grafana/provisioning/dashboards/main.yaml
+      - ./docker/grafana/datasources/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards
     ports:
       - 8080:3000
   

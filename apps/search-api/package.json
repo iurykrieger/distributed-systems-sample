@@ -25,6 +25,9 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/elasticsearch": "^10.0.1",
     "@nestjs/platform-fastify": "^10.2.6",
+    "@willsoto/nestjs-prometheus": "^5.5.1",
+    "fastify-metrics": "^10.3.2",
+    "prom-client": "^14.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
   },
