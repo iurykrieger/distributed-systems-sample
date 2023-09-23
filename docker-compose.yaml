@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  
+  search-api:
+    build: './apps/search-api'
+    command: npm run start:dev
+    volumes:
+      - ./apps/search-api:/usr/app/
+      - /usr/app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    environment:
+      MONGODB_URL: "mongodb://mongodb:27017/search"
+  
+  mongodb:
+    image: mongo:6-jammy
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./data/mongodb:/data/db
