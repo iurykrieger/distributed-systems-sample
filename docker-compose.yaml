@@ -3,13 +3,18 @@ version: '3.4'
 services:
 
   search-api:
-    build:
-      context: './apps/search-api'
-    container_name: search-api
+    build: './apps/search-api'
+    command: npm run start:dev
+    volumes:
+      - ./apps/search-api/src:/usr/app/src
+      - ./apps/search-api/node_modules:/usr/app/node_modules
     ports:
-      - 8080:3000
-    networks:
-      - metrics
+      - "3000:3000"
+    depends_on:
+      - elasticsearch
+      - prometheus
+    environment:
+      ELASTIC_SEARCH_URL: "http://elasticsearch:9200"
 
   prometheus:
     image: prom/prometheus
@@ -18,8 +23,8 @@ services:
     hostname: prometheus
     restart: unless-stopped
     volumes:
-      - ./docker/prometheus/config:/etc/prometheus
-      - ./docker/prometheus/data:/prometheus
+      - ./docker/prometheus:/etc/prometheus
+      - ./data/prometheus:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -37,9 +42,30 @@ services:
     restart: unless-stopped
     ports:
       - 3000:3000
-    networks:
-      - metrics
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elasticsearch
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    deploy:
+      resources:
+        limits:
+          memory: 3GB
+    volumes:
+      - ./data/elasticsearch:/var/lib/elasticsearch/data
+      - ./docker/elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9200:9200
+      - 9300:9300
 
-networks:
-  metrics:
-    driver: bridge
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.10.2
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
