@@ -23,15 +23,13 @@ services:
     hostname: prometheus
     restart: unless-stopped
     volumes:
-      - ./docker/prometheus:/etc/prometheus
+      - ./docker/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
       - ./data/prometheus:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
     ports:
       - 9090:9090
-    networks:
-      - metrics
 
   grafana:
     image: grafana/grafana
@@ -41,7 +39,7 @@ services:
       -  GF_SECURITY_ADMIN_PASSWORD=admin
     restart: unless-stopped
     ports:
-      - 3000:3000
+      - 8080:3000
   
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
