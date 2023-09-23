@@ -6,18 +6,38 @@ services:
     build: './apps/search-api'
     command: npm run start:dev
     volumes:
-      - ./apps/search-api:/usr/app/
-      - /usr/app/node_modules
+      - ./apps/search-api/src:/usr/app/src
+      - ./apps/search-api/node_modules:/usr/app/node_modules
     ports:
       - "3000:3000"
     depends_on:
-      - mongodb
+      - elasticsearch
     environment:
-      MONGODB_URL: "mongodb://mongodb:27017/search"
+      ELASTIC_SEARCH_URL: "http://elasticsearch:9200"
   
-  mongodb:
-    image: mongo:6-jammy
-    ports:
-      - '27017:27017'
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elasticsearch
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    deploy:
+      resources:
+        limits:
+          memory: 3GB
     volumes:
-      - ./data/mongodb:/data/db
+      - ./data/elasticsearch:/var/lib/elasticsearch/data
+      - ./config/elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.10.2
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
