@@ -8,6 +8,7 @@ services:
     volumes:
       - ./apps/search-api/src:/usr/app/src
       - ./apps/search-api/node_modules:/usr/app/node_modules
+      - ./data/products:/usr/app/data/products
     ports:
       - "3000:3000"
     depends_on:

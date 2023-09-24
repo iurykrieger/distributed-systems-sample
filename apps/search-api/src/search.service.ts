@@ -9,22 +9,25 @@ export class SearchService {
 
   constructor(private readonly elasticsearchService: ElasticsearchService) {}
 
-  async index(product: ProductDto): Promise<WriteResponseBase> {
+  async index(products: ProductDto[]): Promise<void> {
     try {
-      const response = await this.elasticsearchService.index({
+      await this.elasticsearchService.bulk({
         index: 'products',
-        id: product.id,
-        document: {
-          id: product.id,
-          name: product.name,
-          price: Number.parseFloat(String(product.price)),
-          oldPrice: Number.parseFloat(String(product.oldPrice)),
-          apiKey: product.apiKey,
-          description: product.description,
-          createdAt: new Date().toISOString()
-        }
+        operations: products.flatMap(product => [
+          {
+            index: { _index: 'products' }
+          },
+          {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            oldPrice: product.oldPrice,
+            apiKey: product.apiKey,
+            description: product.description,
+            createdAt: new Date().toISOString()
+          }
+        ])
       })
-      return response
     } catch (error) {
       this.logger.error(error)
       throw new BadRequestException(error)
