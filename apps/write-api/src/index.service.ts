@@ -2,14 +2,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { createReadStream, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import * as es from 'event-stream'
-import { ProductDto } from '../../read-api/src/dto/product.dto';
 import { SearchService } from './search.service';
+import { ProductDto } from './dto/product.dto';
 
 
 @Injectable()
 export class IndexService {
     private readonly logger = new Logger(SearchService.name)
-    private readonly CHUNK_SIZE = 300
+    private readonly CHUNK_SIZE = 100
     private readonly BASE_DIR = './data/products'
 
     constructor(

@@ -24,6 +24,7 @@ export class SearchService {
 
   async search(query: string): Promise<SearchResponse<ProductDto>> {
     try {
+      this.logger.log(`Incoming search with query "${query}"`)
       const response = await this.elasticsearchService.search<ProductDto>({
         query: {
           match: {
@@ -31,6 +32,7 @@ export class SearchService {
           }
         }
       })
+      this.logger.log(`Took ${response.took}ms to found results for query "${query}"`)
       return response
     } catch (error) {
       this.logger.error(error)

@@ -71,7 +71,7 @@ services:
         limits:
           memory: 4GB
     volumes:
-      - ./data/elasticsearch:/var/lib/elasticsearch/data
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
       - ./docker/elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9200:9200
