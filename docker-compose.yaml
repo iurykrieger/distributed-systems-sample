@@ -55,7 +55,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 3GB
+          memory: 4GB
     volumes:
       - ./data/elasticsearch:/var/lib/elasticsearch/data
       - ./docker/elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yml
