@@ -1,15 +1,9 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { SearchService } from './search.service';
-import { ProductDto } from './dto/product.dto';
 
 @Controller()
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
-
-  @Post('index')
-  index(@Body() product: ProductDto) {
-    return this.searchService.index(product)
-  }
 
   @Get('products/:id')
   getById(@Param('id') id: string) {

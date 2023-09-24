@@ -7,6 +7,10 @@ scrape_configs:
     static_configs:
       - targets: ['prometheus:9090']
 
-  - job_name: 'search-api'
+  - job_name: 'read-api'
     static_configs:
-      - targets: ['search-api:3000']
+      - targets: ['read-api:3000']
+
+  - job_name: 'write-api'
+    static_configs:
+      - targets: ['write-api:3000']

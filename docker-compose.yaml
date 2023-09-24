@@ -2,12 +2,26 @@ version: '3.4'
 
 services:
 
-  search-api:
-    build: './apps/search-api'
+  read-api:
+    build: './apps/read-api'
     command: npm run start:dev
     volumes:
-      - ./apps/search-api/src:/usr/app/src
-      - ./apps/search-api/node_modules:/usr/app/node_modules
+      - ./apps/read-api/src:/usr/app/src
+      - ./apps/read-api/node_modules:/usr/app/node_modules
+    ports:
+      - "3001:3000"
+    depends_on:
+      - elasticsearch
+      - prometheus
+    environment:
+      ELASTIC_SEARCH_URL: "http://elasticsearch:9200"
+
+  write-api:
+    build: './apps/write-api'
+    command: npm run start:dev
+    volumes:
+      - ./apps/write-api/src:/usr/app/src
+      - ./apps/write-api/node_modules:/usr/app/node_modules
     ports:
       - "3000:3000"
     depends_on:
