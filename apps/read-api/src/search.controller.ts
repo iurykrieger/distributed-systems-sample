@@ -3,7 +3,9 @@ import { SearchService } from './search.service';
 
 @Controller()
 export class SearchController {
-  constructor(private readonly searchService: SearchService) {}
+  constructor(
+    private readonly searchService: SearchService
+  ) {}
 
   @Get('products/:id')
   getById(@Param('id') id: string) {

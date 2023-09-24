@@ -22,6 +22,7 @@ services:
     volumes:
       - ./apps/write-api/src:/usr/app/src
       - ./apps/write-api/node_modules:/usr/app/node_modules
+      - ./data/products:/usr/app/data/products
     ports:
       - "3000:3000"
     depends_on:
@@ -68,7 +69,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 3GB
+          memory: 4GB
     volumes:
       - ./data/elasticsearch:/var/lib/elasticsearch/data
       - ./docker/elasticsearch/elasticsearch.yaml:/usr/share/elasticsearch/config/elasticsearch.yml

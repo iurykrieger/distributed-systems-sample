@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { SearchController } from './search.controller';
 import { SearchService } from './search.service';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { IndexService } from '../../write-api/src/index.service';
 
 @Module({
   imports: [
@@ -10,6 +11,9 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
     })
   ],
   controllers: [SearchController],
-  providers: [SearchService],
+  providers: [
+    SearchService,
+    IndexService
+  ],
 })
 export class AppModule {}
