@@ -5,7 +5,6 @@ metadata:
   labels:
     app: write-api
 spec:
-  replicas: 10
   selector:
     matchLabels:
       app: write-api
@@ -17,20 +16,12 @@ spec:
       labels:
         app: write-api
     spec:
-      # volumes:
-      #   - name: products-volume
-      #     hostPath:
-      #       path: /home/iury/Workspace/common/distributed-systems-sample/data/products
-      #       type: Directory
       containers:
         - name: write-api
           image: localhost:32000/write-api:registry
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
-          # volumeMounts:
-          #   - mountPath: /usr/app/data/products
-          #     name: products-volume
           resources:
             requests:
               cpu: "100m"
