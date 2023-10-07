@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import * as es from 'event-stream'
 import { SearchService } from './search.service';
 import { ProductDto } from './dto/product.dto';
-
+import { backOff } from "exponential-backoff";
 
 @Injectable()
 export class IndexService {
@@ -19,11 +19,10 @@ export class IndexService {
     async indexAll() {
         const productsDir = readdirSync(this.BASE_DIR)
 
-        await Promise.all(productsDir.map(file =>
-            this.readProductsFileByChunks(`${this.BASE_DIR}/${file}`, products =>
-                this.searchService.index(products)
-            )
-        ))
+        for (const file of productsDir) {
+            await this.readProductsFileByChunks(`${this.BASE_DIR}/${file}`, async products =>
+                this.searchService.index(products))
+        }
     }
 
     private async readFileByLine(filePath: string, callback: (line: string) => Promise<void>): Promise<void> {
@@ -43,10 +42,30 @@ export class IndexService {
             chunk.push(product)
 
             if (chunk.length % this.CHUNK_SIZE === 0) {
-                await callback(chunk)
+                await this.retryNTimes(() => callback(chunk))
                 chunk = []
             }
         })
+    }
+
+    private async retryNTimes(callback: () => Promise<void>, attempt = 1, times = 5): Promise<void> {
+        try {
+            await callback()
+        } catch (error) {
+            if (attempt >= times) {
+                this.logger.error(error)
+                return
+            }
+
+            this.logger.warn("Too many requests!", error)
+            this.logger.warn(`Attempt number ${attempt}...`)
+            await this.sleep(5000)
+            return this.retryNTimes(callback, attempt + 1)
+        }
+    }
+
+    private sleep(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
     }
 
     private parseProduct(data: any): ProductDto {

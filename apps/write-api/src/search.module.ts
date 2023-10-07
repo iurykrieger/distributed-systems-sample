@@ -7,7 +7,15 @@ import { IndexService } from './index.service';
 @Module({
   imports: [
     ElasticsearchModule.register({
-      node: process.env.ELASTIC_SEARCH_URL
+      node: process.env.ELASTIC_SEARCH_URL,
+      auth: {
+        username: process.env.ELASTIC_USER,
+        password: process.env.ELASTIC_PASSWORD,
+      },
+      tls: {
+        ca: process.env.ELASTIC_CERTIFICATE,
+        rejectUnauthorized: false,
+      }
     })
   ],
   controllers: [SearchController],
@@ -16,4 +24,4 @@ import { IndexService } from './index.service';
     IndexService
   ],
 })
-export class AppModule {}
+export class AppModule { }

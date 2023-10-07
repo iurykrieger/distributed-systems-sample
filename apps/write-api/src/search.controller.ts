@@ -8,11 +8,13 @@ export class SearchController {
   constructor(
     private readonly searchService: SearchService,
     private readonly indexService: IndexService
-  ) {}
+  ) {} 
 
   @Post('index')
-  index(@Body() product: ProductDto) {
-    return this.searchService.index([product])
+  async index(@Body() products: ProductDto[]) {
+    console.log(`Trying to index ${products.length} products...`)
+    await this.searchService.index(products)
+    console.log(`Indexed ${products.length} products`)
   }
 
   @Post('index/all')

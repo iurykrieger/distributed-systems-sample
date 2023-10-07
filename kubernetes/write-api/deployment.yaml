@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: write-api
+  labels:
+    app: write-api
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: write-api
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "3000"
+        prometheus.io/scrape: "true"
+      labels:
+        app: write-api
+    spec:
+      # volumes:
+      #   - name: products-volume
+      #     hostPath:
+      #       path: /home/iury/Workspace/common/distributed-systems-sample/data/products
+      #       type: Directory
+      containers:
+        - name: write-api
+          image: localhost:32000/write-api:registry
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          # volumeMounts:
+          #   - mountPath: /usr/app/data/products
+          #     name: products-volume
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128M"
+            limits:
+              cpu: "300m"
+              memory: "256M"
+          envFrom:
+            - configMapRef:
+                name: write-api-env
+          env:
+            - name: ELASTIC_CERTIFICATE
+              valueFrom:
+                secretKeyRef:
+                  name: elasticsearch-master-certs
+                  key: tls.crt
+            - name: ELASTIC_USER
+              valueFrom:
+                secretKeyRef:
+                  name: elasticsearch-master-credentials
+                  key: username
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: elasticsearch-master-credentials
+                  key: password
