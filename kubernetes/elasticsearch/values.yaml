@@ -11,7 +11,7 @@ resources:
     cpu: "100m"
     memory: "512M"
   limits:
-    cpu: "1000m"
+    cpu: "1500m"
     memory: "1Gi"
 
 # Request smaller persistent volumes.
