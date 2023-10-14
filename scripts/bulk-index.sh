@@ -8,4 +8,4 @@
 
 # Send chunks
 ls data/products/chunks/*.json -A | xargs -d $'\n' -n 10 -P 50 \
-  bash -c 'for line in "$@"; do curl -s -X POST "http://10.152.183.27/index" -H "Content-type: application/json" -d @$line; done' > /dev/null
+  bash -c 'for line in "$@"; do curl -s -X POST "http://localhost:3000/index" -H "Content-type: application/json" -d @$line; done' > /dev/null
