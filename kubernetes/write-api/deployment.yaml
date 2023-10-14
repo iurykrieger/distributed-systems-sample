@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: write-api
-          image: localhost:32000/write-api:registry
+          image: 782141671658.dkr.ecr.us-east-1.amazonaws.com/test/write-api:1.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
